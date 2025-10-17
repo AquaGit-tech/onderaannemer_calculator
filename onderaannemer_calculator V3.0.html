@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kostencalculator Onderaannemer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #33b2d2 0%, #535554 100%);
+            padding: 15px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #33b2d2 0%, #535554 100%);
+            color: white;
+            padding: 24px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            line-height: 1.2;
+        }
+        
+        .header p {
+            font-size: 15px;
+            opacity: 0.95;
+        }
+        
+        .content {
+            padding: 20px 16px;
+        }
+        
+        .intro {
+            background: #f0f9fb;
+            border-left: 3px solid #33b2d2;
+            padding: 12px 14px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+        
+        .intro p {
+            line-height: 1.5;
+            color: #333;
+            font-size: 14px;
+            margin: 0;
+        }
+        
+        .calculator-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .input-group {
+            background: #f8f9fa;
+            padding: 14px 12px;
+            border-radius: 10px;
+            border: 1.5px solid #dee2e6;
+        }
+        
+        .input-group label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+        
+        .input-row {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+        
+        .input-side {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            max-width: 120px;
+            padding: 14px 12px;
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            text-align: center;
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+        
+        .input-group input::-webkit-outer-spin-button,
+        .input-group input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #33b2d2;
+            background: white;
+        }
+        
+        .unit {
+            color: #6c757d;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .price-tag {
+            color: #33b2d2;
+            font-weight: 700;
+            font-size: 16px;
+            white-space: nowrap;
+        }
+        
+        .result {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: right;
+        }
+        
+        .result-label {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 4px;
+        }
+        
+        .result-amount {
+            font-size: 22px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .total-section {
+            background: linear-gradient(135deg, #33b2d2 0%, #2a95b0 100%);
+            padding: 20px 16px;
+            border-radius: 12px;
+            margin: 20px 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .total-label {
+            font-size: 15px;
+            margin-bottom: 8px;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+        
+        .total-amount {
+            font-size: 44px;
+            font-weight: 700;
+            letter-spacing: -1px;
+            margin-bottom: 6px;
+            line-height: 1;
+        }
+        
+        .total-description {
+            font-size: 13px;
+            opacity: 0.85;
+        }
+        
+        .actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 16px;
+        }
+        
+        .btn {
+            padding: 16px 20px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .btn:active {
+            transform: scale(0.96);
+        }
+        
+        .btn-reset {
+            background: #6c757d;
+            color: white;
+            box-shadow: 0 2px 8px rgba(108, 117, 125, 0.2);
+        }
+        
+        .btn-print {
+            background: #33b2d2;
+            color: white;
+            box-shadow: 0 2px 8px rgba(51, 178, 210, 0.25);
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px 16px;
+            background: #f8f9fa;
+            color: #6c757d;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+        
+        .footer p {
+            margin: 4px 0;
+        }
+        
+        .footer strong {
+            color: #535554;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+            }
+            
+            .actions {
+                display: none;
+            }
+        }
+        
+        @media (max-width: 380px) {
+            body {
+                padding: 10px;
+            }
+            
+            .header {
+                padding: 20px 16px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+            }
+            
+            .content {
+                padding: 16px 12px;
+            }
+            
+            .input-group {
+                padding: 12px 10px;
+            }
+            
+            .input-group input {
+                max-width: 100px;
+                padding: 12px 10px;
+                font-size: 18px;
+            }
+            
+            .total-amount {
+                font-size: 36px;
+            }
+        }
+        
+        @media (min-width: 600px) {
+            body {
+                padding: 30px 20px;
+            }
+            
+            .container {
+                border-radius: 20px;
+            }
+            
+            .header {
+                padding: 32px 24px;
+            }
+            
+            .header h1 {
+                font-size: 30px;
+            }
+            
+            .content {
+                padding: 28px 24px;
+            }
+            
+            .calculator-grid {
+                gap: 16px;
+            }
+            
+            .input-group {
+                padding: 18px 16px;
+            }
+            
+            .total-section {
+                padding: 28px 20px;
+            }
+            
+            .total-amount {
+                font-size: 52px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧮 KOSTENCALCULATOR</h1>
+            <p>Bereken snel je verdienste per opdracht</p>
+        </div>
+        
+        <div class="content">
+            <div class="intro">
+                <p><strong>Hoe werkt het?</strong> Vul hieronder de hoeveelheden in die je hebt uitgevoerd of gaat uitvoeren. De calculator berekent automatisch je totale verdienste.</p>
+            </div>
+            
+            <div class="calculator-grid">
+                <div class="input-group">
+                    <label for="afkappen">Afkappen van muren</label>
+                    <div class="input-row">
+                        <div class="input-side">
+                            <input type="number" id="afkappen" placeholder="0" min="0" step="0.5" inputmode="decimal">
+                            <span class="unit">m²</span>
+                            <span class="price-tag">× €13</span>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">Subtotaal</div>
+                            <div class="result-amount" id="subtotal-afkappen">€0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="injecteren">Boren en injecteren</label>
+                    <div class="input-row">
+                        <div class="input-side">
+                            <input type="number" id="injecteren" placeholder="0" min="0" step="0.5" inputmode="decimal">
+                            <span class="unit">m</span>
+                            <span class="price-tag">× €31</span>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">Subtotaal</div>
+                            <div class="result-amount" id="subtotal-injecteren">€0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="membraan">Plaatsen membraan</label>
+                    <div class="input-row">
+                        <div class="input-side">
+                            <input type="number" id="membraan" placeholder="0" min="0" step="0.5" inputmode="decimal">
+                            <span class="unit">m²</span>
+                            <span class="price-tag">× €28</span>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">Subtotaal</div>
+                            <div class="result-amount" id="subtotal-membraan">€0</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="bezetten">Bezetten/bepleisteren</label>
+                    <div class="input-row">
+                        <div class="input-side">
+                            <input type="number" id="bezetten" placeholder="0" min="0" step="0.5" inputmode="decimal">
+                            <span class="unit">m²</span>
+                            <span class="price-tag">× €38</span>
+                        </div>
+                        <div class="result">
+                            <div class="result-label">Subtotaal</div>
+                            <div class="result-amount" id="subtotal-bezetten">€0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="total-section">
+                <div class="total-label">Totale verdienste</div>
+                <div class="total-amount" id="total-amount">€0</div>
+                <div class="total-description">All-in prijs inclusief alle kosten</div>
+            </div>
+            
+            <div class="actions">
+                <button class="btn btn-reset" onclick="resetCalculator()">🔄 Opnieuw</button>
+                <button class="btn btn-print" onclick="window.print()">🖨️ Afdrukken</button>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p><strong>AQUAPROVED BV</strong> | Schoolstraat 254, 9100 Sint-Niklaas</p>
+            <p>BTW BE 0546.999.034 | info@aquaproved.be | +32 486 355 702</p>
+        </div>
+    </div>
+    
+    <script>
+        const prijzen = {
+            afkappen: 13,
+            injecteren: 31,
+            membraan: 28,
+            bezetten: 38
+        };
+        
+        function formatEuro(bedrag) {
+            if (bedrag === 0) return '€0';
+            return '€' + Math.round(bedrag).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+        
+        function berekenSubtotaal(component) {
+            const input = document.getElementById(component);
+            const aantal = parseFloat(input.value) || 0;
+            const subtotaal = aantal * prijzen[component];
+            
+            document.getElementById(`subtotal-${component}`).textContent = formatEuro(subtotaal);
+            
+            berekenTotaal();
+        }
+        
+        function berekenTotaal() {
+            let totaal = 0;
+            
+            Object.keys(prijzen).forEach(component => {
+                const input = document.getElementById(component);
+                const aantal = parseFloat(input.value) || 0;
+                totaal += aantal * prijzen[component];
+            });
+            
+            document.getElementById('total-amount').textContent = formatEuro(totaal);
+        }
+        
+        function resetCalculator() {
+            Object.keys(prijzen).forEach(component => {
+                document.getElementById(component).value = '';
+                document.getElementById(`subtotal-${component}`).textContent = '€0';
+            });
+            document.getElementById('total-amount').textContent = '€0';
+        }
+        
+        // Event listeners
+        Object.keys(prijzen).forEach(component => {
+            const input = document.getElementById(component);
+            input.addEventListener('input', () => berekenSubtotaal(component));
+            input.addEventListener('keyup', () => berekenSubtotaal(component));
+        });
+        
+        // Allow decimal comma
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === ',') {
+                    e.preventDefault();
+                    this.value += '.';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
